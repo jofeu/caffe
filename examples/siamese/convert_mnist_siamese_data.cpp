@@ -15,6 +15,11 @@
 #include "caffe/proto/caffe.pb.h"
 #include "caffe/util/math_functions.hpp"
 
+#ifdef _WINDOWS
+#include "caffe/util/snprintf.h"
+#endif
+
+
 #ifdef USE_LEVELDB
 #include "leveldb/db.h"
 

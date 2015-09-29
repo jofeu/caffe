@@ -23,6 +23,11 @@
 #include "caffe/util/io.hpp"
 #include "caffe/util/rng.hpp"
 
+#ifdef _WINDOWS
+#include "caffe/util/snprintf.h"
+#endif
+
+
 using namespace caffe;  // NOLINT(build/namespaces)
 using std::pair;
 using boost::scoped_ptr;

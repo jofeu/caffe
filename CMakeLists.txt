@@ -40,7 +40,7 @@ if(USE_libstdcpp)
   message("-- Warning: forcing libstdc++ (controlled by USE_libstdcpp option in cmake)")
 endif()
 
-add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
+#add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
 
 # ---[ Warnings
 caffe_warnings_disable(CMAKE_CXX_FLAGS -Wno-sign-compare -Wno-uninitialized)

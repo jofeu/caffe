@@ -17,6 +17,11 @@
 #include "caffe/proto/caffe.pb.h"
 #include "caffe/util/db.hpp"
 
+#ifdef _WINDOWS
+#include "caffe/util/snprintf.h"
+#endif
+
+
 using caffe::Datum;
 using boost::scoped_ptr;
 using std::string;

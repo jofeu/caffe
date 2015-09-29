@@ -10,6 +10,8 @@ namespace bp = boost::python;
 #include <string>
 #include <vector>
 
+#include "reference_layers.h"
+
 #include "boost/algorithm/string.hpp"
 #include "caffe/caffe.hpp"
 #include "caffe/util/signal_handler.h"

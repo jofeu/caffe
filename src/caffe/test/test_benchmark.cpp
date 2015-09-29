@@ -7,6 +7,19 @@
 
 #include "caffe/test/test_caffe_main.hpp"
 
+#ifdef _WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+
+int usleep(unsigned usec)
+{
+  Sleep(usec / 1000);
+  return 0;
+}
+
+#endif
+
 namespace caffe {
 
 const float kMillisecondsThreshold = 30;

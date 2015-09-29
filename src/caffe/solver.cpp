@@ -14,6 +14,7 @@
 #include "caffe/util/io.hpp"
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/upgrade_proto.hpp"
+#include "caffe/util/snprintf.h"
 
 namespace caffe {
 

@@ -10,9 +10,58 @@
 #include "caffe/common.hpp"
 #include "caffe/proto/caffe.pb.h"
 
+#ifdef _WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif
+
 namespace caffe {
 
 using ::google::protobuf::Message;
+
+#ifdef _WINDOWS
+
+inline void MakeTempFilename(string* temp_filename) {
+
+	temp_filename->clear();
+
+	char temp_dir_path[MAX_PATH + 1] = { '\0' };  // NOLINT
+	char temp_file_path[MAX_PATH + 1] = { '\0' };  // NOLINT
+
+	::GetTempPathA(sizeof(temp_dir_path), temp_dir_path);
+	const UINT success = ::GetTempFileNameA(temp_dir_path,
+		"caffe_test",
+		0,  // Generate unique file name.
+		temp_file_path);
+	CHECK_NE(success, 0) << "Failed to open a temporary file at: " << *temp_filename;
+
+	*temp_filename = temp_dir_path;
+}
+
+inline void MakeTempDir(string* temp_dirname) {
+
+	temp_dirname->clear();
+	char temp_dir_path[MAX_PATH + 1] = { '\0' };  // NOLINT
+	::GetTempPathA(sizeof(temp_dir_path), temp_dir_path);
+	size_t tmp_dir_len = strlen(temp_dir_path);
+	CHECK_GE(tmp_dir_len + 30, MAX_PATH) << "The temporary directory name " << temp_dir_path << " is too long.";
+	strcat(temp_dir_path, "caffe_test_");
+	tmp_dir_len = strlen(temp_dir_path);
+	char* writepos = temp_dir_path + tmp_dir_len;
+	BOOL success;
+	do
+	{
+		int i = 0;
+		for (; i < 10; ++i)
+			writepos[i] = char(unsigned(rand()) % 26) + 'a';
+		writepos[i] = 0;
+		success = CreateDirectory(temp_dir_path, NULL);
+	} while (!success);
+	*temp_dirname = temp_dir_path;
+}
+
+#else
 
 inline void MakeTempFilename(string* temp_filename) {
   temp_filename->clear();
@@ -39,6 +88,8 @@ inline void MakeTempDir(string* temp_dirname) {
   *temp_dirname = temp_dirname_cstr;
   delete[] temp_dirname_cstr;
 }
+
+#endif
 
 bool ReadProtoFromTextFile(const char* filename, Message* proto);
 

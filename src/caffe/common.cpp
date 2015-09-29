@@ -7,6 +7,12 @@
 #include "caffe/common.hpp"
 #include "caffe/util/rng.hpp"
 
+#ifdef _WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif
+
 namespace caffe {
 
 // Make sure each thread can have different values.
@@ -18,6 +24,19 @@ Caffe& Caffe::Get() {
   }
   return *(thread_instance_.get());
 }
+
+#ifdef _WINDOWS
+
+int64_t cluster_seedgen(void) {
+  int64_t s, seed, pid;
+
+  pid = int64_t(GetCurrentThreadId());
+  QueryPerformanceCounter((LARGE_INTEGER*)&s);
+  seed = abs(((s * 181) * ((pid - 83) * 359)) % 104729);
+  return seed;
+}
+
+#else
 
 // random seeding
 int64_t cluster_seedgen(void) {
@@ -39,14 +58,17 @@ int64_t cluster_seedgen(void) {
   return seed;
 }
 
+#endif
 
 void GlobalInit(int* pargc, char*** pargv) {
   // Google flags.
   ::gflags::ParseCommandLineFlags(pargc, pargv, true);
   // Google logging.
   ::google::InitGoogleLogging(*(pargv)[0]);
+#ifndef _WINDOWS
   // Provide a backtrace on segfault.
   ::google::InstallFailureSignalHandler();
+#endif
 }
 
 #ifdef CPU_ONLY  // CPU-only Caffe.

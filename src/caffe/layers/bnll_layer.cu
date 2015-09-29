@@ -6,7 +6,8 @@
 
 namespace caffe {
 
-const float kBNLL_THRESHOLD = 50.;
+// for some reason, const float kBNLL_THRESHOLD = 50.; does not work with nvcc on windows
+#define kBNLL_THRESHOLD 50.0f
 
 template <typename Dtype>
 __global__ void BNLLForward(const int n, const Dtype* in, Dtype* out) {

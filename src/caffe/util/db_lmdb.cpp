@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 
 #include <string>
+#include "caffe/util/mkdir.h"
 
 namespace caffe { namespace db {
 

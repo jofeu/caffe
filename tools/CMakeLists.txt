@@ -13,6 +13,7 @@ foreach(source ${srcs})
   # target
   add_executable(${name} ${source})
   target_link_libraries(${name} ${Caffe_LINK})
+  message("Caffe_LINK=${Caffe_LINK}")
   caffe_default_properties(${name})
 
   # set back RUNTIME_OUTPUT_DIRECTORY
@@ -21,7 +22,12 @@ foreach(source ${srcs})
 
   # restore output name without suffix
   if(name MATCHES "caffe.bin")
-    set_target_properties(${name} PROPERTIES OUTPUT_NAME caffe)
+    set_target_properties(${name} PROPERTIES
+      OUTPUT_NAME caffe
+      DEBUG_POSTFIX ${Caffe_DEBUG_POSTFIX}
+      ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/dummy_does_not_exist"
+      LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/dummy_does_not_exist"
+      RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
   endif()
 
   # Install

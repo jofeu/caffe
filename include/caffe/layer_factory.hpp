@@ -122,10 +122,13 @@ class LayerRegisterer {
   }
 };
 
-
+// do not make it static to enable referencing it if from outside the library
+// in order to introduce an artificial dependency if the linker (like MSCVC) 
+// does not have a "link everything, regardless whether referenced or not" 
+// option
 #define REGISTER_LAYER_CREATOR(type, creator)                                  \
-  static LayerRegisterer<float> g_creator_f_##type(#type, creator<float>);     \
-  static LayerRegisterer<double> g_creator_d_##type(#type, creator<double>)    \
+  LayerRegisterer<float> g_creator_f_##type(#type, creator<float>);            \
+  LayerRegisterer<double> g_creator_d_##type(#type, creator<double>)           \
 
 #define REGISTER_LAYER_CLASS(type)                                             \
   template <typename Dtype>                                                    \

@@ -24,6 +24,11 @@
 
 #include "caffe/proto/caffe.pb.h"
 
+#ifdef _WINDOWS
+#include "caffe/util/mkdir.h"
+#include "caffe/util/snprintf.h"
+#endif
+
 #if defined(USE_LEVELDB) && defined(USE_LMDB)
 
 using namespace caffe;  // NOLINT(build/namespaces)

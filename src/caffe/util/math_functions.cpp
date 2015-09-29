@@ -9,6 +9,34 @@
 
 namespace caffe {
 
+inline int popcount(uint32_t v)
+{
+#ifdef _WINDOWS
+  int c;
+  for (c = 0; v; c++)
+  {
+    v &= v - 1;
+  }
+  return c;
+#else
+  return __builtin_popcount(v);
+#endif
+}
+
+inline int popcount(uint64_t v)
+{
+#ifdef _WINDOWS
+  int c;
+  for (c = 0; v; c++)
+  {
+    v &= v - 1;
+  }
+  return c;
+#else
+  return __builtin_popcountl(v);
+#endif
+}
+
 template<>
 void caffe_cpu_gemm<float>(const CBLAS_TRANSPOSE TransA,
     const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
@@ -353,8 +381,8 @@ int caffe_cpu_hamming_distance<float>(const int n, const float* x,
                                   const float* y) {
   int dist = 0;
   for (int i = 0; i < n; ++i) {
-    dist += __builtin_popcount(static_cast<uint32_t>(x[i]) ^
-                               static_cast<uint32_t>(y[i]));
+    dist += popcount(static_cast<uint32_t>(x[i]) ^
+                     static_cast<uint32_t>(y[i]));
   }
   return dist;
 }
@@ -364,8 +392,8 @@ int caffe_cpu_hamming_distance<double>(const int n, const double* x,
                                    const double* y) {
   int dist = 0;
   for (int i = 0; i < n; ++i) {
-    dist += __builtin_popcountl(static_cast<uint64_t>(x[i]) ^
-                                static_cast<uint64_t>(y[i]));
+    dist += popcount(static_cast<uint64_t>(x[i]) ^
+                     static_cast<uint64_t>(y[i]));
   }
   return dist;
 }

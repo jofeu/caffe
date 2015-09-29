@@ -2,10 +2,15 @@
 set(Caffe_LINKER_LIBS "")
 
 # ---[ Boost
-find_package(Boost 1.46 REQUIRED COMPONENTS system thread)
+find_package(Boost 1.46 REQUIRED COMPONENTS system thread date_time)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 list(APPEND Caffe_LINKER_LIBS ${Boost_LIBRARIES})
 
+# this is to make the auto-link feature of the boost header files work
+# under windows
+if(WIN32)
+  LINK_DIRECTORIES(${LINK_DIRECTORIES} ${Boost_LIBRARY_DIR_RELEASE})
+endif()
 # ---[ Threads
 find_package(Threads REQUIRED)
 list(APPEND Caffe_LINKER_LIBS ${CMAKE_THREAD_LIBS_INIT})
@@ -25,8 +30,13 @@ include(cmake/ProtoBuf.cmake)
 
 # ---[ HDF5
 find_package(HDF5 COMPONENTS HL REQUIRED)
+if (WIN32)
+  set(HDF5_LIBRARIES optimized ${HDF5_hdf5_LIBRARY_RELEASE} debug ${HDF5_hdf5_LIBRARY_DEBUG} optimized ${HDF5_hdf5_hl_LIBRARY_RELEASE} debug ${HDF5_hdf5_hl_LIBRARY_DEBUG}  )
+endif()
+
 include_directories(SYSTEM ${HDF5_INCLUDE_DIRS} ${HDF5_HL_INCLUDE_DIR})
 list(APPEND Caffe_LINKER_LIBS ${HDF5_LIBRARIES})
+message("HDF5_LIBRARIES=${HDF5_LIBRARIES}")
 
 # ---[ LMDB
 if(USE_LMDB)
