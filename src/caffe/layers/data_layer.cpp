@@ -86,7 +86,7 @@ void DataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
   for (int item_id = 0; item_id < batch_size; ++item_id) {
     timer.Start();
     // get a datum
-    Datum& datum = *(reader_.full().pop("Waiting for data"));
+    Datum& datum = *(reader_.full().pop());
     read_time += timer.MicroSeconds();
     timer.Start();
     // Apply data transformations (mirror, scale, crop...)
